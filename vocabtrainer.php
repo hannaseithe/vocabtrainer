@@ -249,7 +249,7 @@ function vt_create_post_type() {
                 'name' => __( 'VTWords' ),
                 'singular_name' => __( 'VTWord' )
             ),
-        'public' => true,
+        'public' => false,
         'has_archive' => true,
         )
     );
