@@ -29,11 +29,41 @@ along with {Plugin Name}. If not, see {License URI}.
  //admin page
  
  function vt_page() {
- 	
+ 	if( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) &&  $_POST['action'] == "update_post" && isset($_POST['pid'])) {
+		echo "Update Posted";
+    
+        $id =				$_POST['pid'];
+        $title =  			$_POST['title'];
+		$original =			$_POST['original'];
+		$transliteration =	$_POST['transliteration'];
+		$translation =		$_POST['translation'];
+        $content = 			$_POST['content'];
+
+		echo $id;
+	    // Add the content of the form to $post as an array
+	    $update_post = array(
+	    	'ID'			=> $id,
+	        'post_title'    => $title,
+	        'post_content'  => $content 
+	    );
+		
+	    //save the new post and return its ID
+	    wp_update_post($update_post); 
+		
+		//update the Custom Fields
+	    update_post_meta( $id, 'original', $original );
+		update_post_meta( $id, 'transliteration', $transliteration );
+		update_post_meta( $id, 'translation', $translation );
+	
+	
+	
+	};
  	ob_start(); ?>
  	<h1>Edit Words / New Words</h1>
  	
  	<?php
+ 	
+ 	//get ALL vt_words
  	echo ob_get_clean();
 	$type = 'vt_words';
 	$args=array(
@@ -93,37 +123,8 @@ along with {Plugin Name}. If not, see {License URI}.
 	}
 	wp_reset_query();
 	
-		if( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) &&  $_POST['action'] == "update_post" && isset($_POST['pid'])) {
-echo "I have no idea what I am doing";
-    // Do some minor form validation to make sure there is content
-    
-        $id =				$_POST['pid'];
-        $title =  			$_POST['title'];
-		$original =			$_POST['original'];
-		$transliteration =	$_POST['transliteration'];
-		$translation =		$_POST['translation'];
-        $content = 			$_POST['content'];
-		
-   
-    
-
-    // Add the content of the form to $post as an array
-    $update_post = array(
-    	'ID'			=> $id,
-        'post_title'    => $title,
-        'post_content'  => $description 
-    );
-	
-	 
-    //save the new post and return its ID
-    wp_update_post($update_post); 
-    update_post_meta( $id, 'original', $original );
-	update_post_meta( $id, 'transliteration', $transliteration );
-	update_post_meta( $id, 'translation', $translation );
 	
 	
-	
-};
 	
  };
  
