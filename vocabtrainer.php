@@ -32,6 +32,8 @@ along with {Plugin Name}. If not, see {License URI}.
  	?>
  	<h1>Edit Words / New Words</h1>
  	<?php
+ 	
+ 	//UPDATE POST
  	if( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) &&  $_POST['action'] == "update_post" && isset($_POST['pid'])) {
 		?>
 		<div class="updated notice notice-success is-dismissible below-h2" id="message">
@@ -43,17 +45,18 @@ along with {Plugin Name}. If not, see {License URI}.
 		<?php	
     
         $pid =				$_POST['pid'];
-        $title =  			$_POST['title'];
 		$original =			$_POST['original'];
 		$transliteration =	$_POST['transliteration'];
 		$translation =		$_POST['translation'];
         $content = 			$_POST['content'];
+		$proficiency = 		$_POST['proficiency'];
+		
 
 		echo $id;
 	    // Add the content of the form to $post as an array
 	    $update_post = array(
 	    	'ID'			=> $pid,
-	        'post_title'    => $title,
+	        'post_title'    => $original . " (" . $transliteration . ") - " . $translation,
 	        'post_content'  => $content 
 	    );
 		
@@ -64,6 +67,7 @@ along with {Plugin Name}. If not, see {License URI}.
 	    update_post_meta( $pid, 'original', $original );
 		update_post_meta( $pid, 'transliteration', $transliteration );
 		update_post_meta( $pid, 'translation', $translation );
+		update_post_meta( $pid, 'proficiency', $proficiency );
 	
 	
 	
@@ -78,17 +82,18 @@ along with {Plugin Name}. If not, see {License URI}.
 			</div>
 		<?php	
     
-        $title =  			$_POST['title'];
+        
 		$original =			$_POST['original'];
 		$transliteration =	$_POST['transliteration'];
 		$translation =		$_POST['translation'];
         $content = 			$_POST['content'];
+		$proficiency = 		$_POST['proficiency'];
 
 		
 	    // Add the content of the form to $post as an array
 	    $new_post = array(
 
-	        'post_title'    => $title,
+	        'post_title'    => $original . " (" . $transliteration . ") - " . $translation,
 	        'post_content'  => $content,
 	        'post_status'   => 'publish',           
         	'post_type' 	=> 'vt_words'
@@ -103,7 +108,7 @@ along with {Plugin Name}. If not, see {License URI}.
 	    update_post_meta( $pid, 'original', $original );
 		update_post_meta( $pid, 'transliteration', $transliteration );
 		update_post_meta( $pid, 'translation', $translation );
-	
+		update_post_meta( $pid, 'proficiency', $proficiency );
 	
 	
 	}
@@ -126,6 +131,7 @@ along with {Plugin Name}. If not, see {License URI}.
 	    delete_post_meta( $pid, 'original');
 		delete_post_meta( $pid, 'transliteration');
 		delete_post_meta( $pid, 'translation');
+		delete_post_meta( $pid, 'proficiency');
 	
 	
 	
@@ -150,20 +156,23 @@ along with {Plugin Name}. If not, see {License URI}.
 	$my_query = null;
 	$my_query = new WP_Query($args);
 	if( $my_query->have_posts() ) {?>
-		<table>
-			<tr><td><h3>Title</h3>
-			  </td>
+		<table class="widefat tablenav">
+			<thead><th><h3>Title</h3>
+			  </th>
 			  
-			  <td><h3>Nepali</h3>
-			  </td>
-			  <td><h3>Transliteration</h3>
-			  </td>
-			  <td><h3>English</h3>
-			  </td>
-			  <td><h3>Content</h3>
-			  </td>
-			  <td></td>
-			 </tr>
+			  <th><h3>Nepali</h3>
+			  </th>
+			  <th><h3>Transliteration</h3>
+			  </th>
+			  <th><h3>English</h3>
+			  </th>
+			  <th><h3>Content</h3>
+			  </th>
+			  <th><h3>Proficiency</h3>
+			  </th>
+			  <th></th>
+			  <th></th>
+			 </thead>
 		<?php
 	  while ($my_query->have_posts()) : $my_query->the_post(); 
 	  $id = get_the_ID();
@@ -173,11 +182,13 @@ along with {Plugin Name}. If not, see {License URI}.
 	  $content = get_the_content();
 	  $original = $custom["original"][0];
 	  $transliteration = $custom["transliteration"][0];
-	  $translation = $custom["translation"][0];?>
+	  $translation = $custom["translation"][0];
+	  $proficiency = $custom["proficiency"][0];
+	  ?>
 	    
 	    	<tr><form action="" method="post" name="myForm">
 	    		<td>
-			  <input type="text" name="title" value="<?php echo $title; ?>"></td>
+			  <h3><?php echo $title; ?></h3></td>
 			  
 	    		<td>
 			  <input type="text" name="original" value="<?php echo $original; ?>"></td>
@@ -187,7 +198,15 @@ along with {Plugin Name}. If not, see {License URI}.
 			  <input type="text" name="translation" value="<?php echo $translation; ?>"></td>
 			  <td>
 			  <textarea name="content"><?php echo $content; ?></textarea></td>
+			  <td><select name="proficiency" >
+				  <option value="beginner" <?php if ($proficiency == "beginner") { echo "selected='selected'";}; ?>>Beginner</option>
+				  <option value="intermediate" <?php if ($proficiency == "intermediate") { echo "selected='selected'";}; ?>>Intermediate</option>
+				  <option value="advanced" <?php if ($proficiency == "advanced") { echo "selected='selected'";}; ?>>Advanced</option>
+				  
+				</select></td>
+			  
 			  <td><input type="submit" value="Update" class="button-primary"></td>
+			  
 			  <input type="hidden" name="action" value="update_post" />
 				<input type="hidden" name="pid" value="<?php echo $id; ?>" />
 				<?php wp_nonce_field( 'update-post' ); ?></form>
@@ -203,7 +222,7 @@ along with {Plugin Name}. If not, see {License URI}.
 	  endwhile;?>
 	  			<tr><form action="" method="post" name="myForm">
 	    		<td>
-			  	<input type="text" name="title" value=""></td>
+			  	New Word:
 			  
 	    		<td>
 			  <input type="text" name="original" value=""></td>
@@ -213,6 +232,12 @@ along with {Plugin Name}. If not, see {License URI}.
 			  <input type="text" name="translation" value=""></td>
 			  <td>
 			  <textarea name="content"></textarea></td>
+			  <td><select name="proficiency" value="">
+				  <option value="beginner">Beginner</option>
+				  <option value="intermediate">Intermediate</option>
+				  <option value="advanced">Advanced</option>
+				  
+				</select></td>
 			  <td><input type="submit" value="New Word" class="button-primary"></td>
 			  <input type="hidden" name="action" value="new_post" />
 				<?php wp_nonce_field( 'new-post' ); ?></form>
@@ -249,8 +274,9 @@ function vt_create_post_type() {
                 'name' => __( 'VTWords' ),
                 'singular_name' => __( 'VTWord' )
             ),
-        'public' => false,
+        'public' => true,
         'has_archive' => true,
+        'show_ui'		=> false
         )
     );
 }
