@@ -29,10 +29,20 @@ along with {Plugin Name}. If not, see {License URI}.
  //admin page
  
  function vt_page() {
+ 	?>
+ 	<h1>Edit Words / New Words</h1>
+ 	<?php
  	if( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) &&  $_POST['action'] == "update_post" && isset($_POST['pid'])) {
-		echo "Update Posted";
+		?>
+		<div class="updated notice notice-success is-dismissible below-h2" id="message">
+			<p>Update posted 
+				<button class="notice-dismiss" type="button">
+					<span class="screen-reader-text">Diese Meldung verwerfen.</span>
+				</button>
+			</div>
+		<?php	
     
-        $id =				$_POST['pid'];
+        $pid =				$_POST['pid'];
         $title =  			$_POST['title'];
 		$original =			$_POST['original'];
 		$transliteration =	$_POST['transliteration'];
@@ -42,7 +52,7 @@ along with {Plugin Name}. If not, see {License URI}.
 		echo $id;
 	    // Add the content of the form to $post as an array
 	    $update_post = array(
-	    	'ID'			=> $id,
+	    	'ID'			=> $pid,
 	        'post_title'    => $title,
 	        'post_content'  => $content 
 	    );
@@ -51,15 +61,80 @@ along with {Plugin Name}. If not, see {License URI}.
 	    wp_update_post($update_post); 
 		
 		//update the Custom Fields
-	    update_post_meta( $id, 'original', $original );
-		update_post_meta( $id, 'transliteration', $transliteration );
-		update_post_meta( $id, 'translation', $translation );
+	    update_post_meta( $pid, 'original', $original );
+		update_post_meta( $pid, 'transliteration', $transliteration );
+		update_post_meta( $pid, 'translation', $translation );
 	
 	
 	
-	};
+	}
+	elseif ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) &&  $_POST['action'] == "new_post" ) {
+		?>
+		<div class="updated notice notice-success is-dismissible below-h2" id="message">
+			<p>New word posted 
+				<button class="notice-dismiss" type="button">
+					<span class="screen-reader-text">Diese Meldung verwerfen.</span>
+				</button>
+			</div>
+		<?php	
+    
+        $title =  			$_POST['title'];
+		$original =			$_POST['original'];
+		$transliteration =	$_POST['transliteration'];
+		$translation =		$_POST['translation'];
+        $content = 			$_POST['content'];
+
+		
+	    // Add the content of the form to $post as an array
+	    $new_post = array(
+
+	        'post_title'    => $title,
+	        'post_content'  => $content,
+	        'post_status'   => 'publish',           
+        	'post_type' 	=> 'vt_words'
+	    );
+		
+		
+		
+	    //save the new post and return its ID
+	    $pid = wp_insert_post($new_post); 
+		
+		//update the Custom Fields
+	    update_post_meta( $pid, 'original', $original );
+		update_post_meta( $pid, 'transliteration', $transliteration );
+		update_post_meta( $pid, 'translation', $translation );
+	
+	
+	
+	}
+	elseif ( 'POST' == $_SERVER['REQUEST_METHOD'] && !empty( $_POST['action'] ) &&  $_POST['action'] == "delete_post" && isset($_POST['pid'])) {
+		?>
+		<div class="updated notice notice-success is-dismissible below-h2" id="message">
+			<p>Word deleted 
+				<button class="notice-dismiss" type="button">
+					<span class="screen-reader-text">Diese Meldung verwerfen.</span>
+				</button>
+			</div>
+		<?php	
+    
+        $pid =  			$_POST['pid'];
+		
+	    //delete post
+	    wp_delete_post($pid); 
+		
+		//delete the Custom Fields --> delete if there is Trash Option
+	    delete_post_meta( $pid, 'original');
+		delete_post_meta( $pid, 'transliteration');
+		delete_post_meta( $pid, 'translation');
+	
+	
+	
+	}
+	
+	;
+	
  	ob_start(); ?>
- 	<h1>Edit Words / New Words</h1>
+ 	
  	
  	<?php
  	
@@ -111,15 +186,38 @@ along with {Plugin Name}. If not, see {License URI}.
 			  <td>
 			  <input type="text" name="translation" value="<?php echo $translation; ?>"></td>
 			  <td>
-			  <textarea  name="content"> <?php echo $content; ?></textarea></td>
+			  <textarea name="content"><?php echo $content; ?></textarea></td>
 			  <td><input type="submit" value="Update" class="button-primary"></td>
 			  <input type="hidden" name="action" value="update_post" />
 				<input type="hidden" name="pid" value="<?php echo $id; ?>" />
-				<?php wp_nonce_field( 'new-post' ); ?></form>
+				<?php wp_nonce_field( 'update-post' ); ?></form>
+				<form action="" method="post" name="myForm">
+	    		
+			  <td><input type="submit" value="Delete" class="button-primary"></td>
+			  <input type="hidden" name="action" value="delete_post" />
+				<input type="hidden" name="pid" value="<?php echo $id; ?>" />
+				<?php wp_nonce_field( 'delete-post' ); ?></form>
 			  </tr>
 	    	
 	    <?php
-	  endwhile;?></table><?php
+	  endwhile;?>
+	  			<tr><form action="" method="post" name="myForm">
+	    		<td>
+			  	<input type="text" name="title" value=""></td>
+			  
+	    		<td>
+			  <input type="text" name="original" value=""></td>
+			 <td> 
+			  <input type="text" name="transliteration" value=""></td>
+			  <td>
+			  <input type="text" name="translation" value=""></td>
+			  <td>
+			  <textarea name="content"></textarea></td>
+			  <td><input type="submit" value="New Word" class="button-primary"></td>
+			  <input type="hidden" name="action" value="new_post" />
+				<?php wp_nonce_field( 'new-post' ); ?></form>
+			  </tr>
+	  </table><?php
 	}
 	wp_reset_query();
 	
