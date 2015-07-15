@@ -30,6 +30,13 @@ along with {Plugin Name}. If not, see {License URI}.
  
  function vt_page() {
  	?>
+ 	<script>
+ 		  $(function() {
+    $( ".accordion" ).accordion({
+      collapsible: true
+    });
+  });
+ 	</script>
  	<h1>Edit Words / New Words</h1>
  	<?php
  	
@@ -157,18 +164,18 @@ along with {Plugin Name}. If not, see {License URI}.
 	$my_query = new WP_Query($args);
 	if( $my_query->have_posts() ) {?>
 		<table class="widefat tablenav">
-			<thead><th><h3>Title</h3>
+			<thead><th>Title
 			  </th>
 			  
-			  <th><h3>Nepali</h3>
+			  <th>Nepali
 			  </th>
-			  <th><h3>Transliteration</h3>
+			  <th>Transliteration
 			  </th>
-			  <th><h3>English</h3>
+			  <th>English
 			  </th>
-			  <th><h3>Content</h3>
+			  <th>Content
 			  </th>
-			  <th><h3>Proficiency</h3>
+			  <th>Proficiency
 			  </th>
 			  <th></th>
 			  <th></th>
@@ -188,7 +195,7 @@ along with {Plugin Name}. If not, see {License URI}.
 	    
 	    	<tr><form action="" method="post" name="myForm">
 	    		<td>
-			  <h3><?php echo $title; ?></h3></td>
+			  <strong><?php echo $title; ?></strong></td>
 			  
 	    		<td>
 			  <input type="text" name="original" value="<?php echo $original; ?>"></td>
@@ -197,7 +204,11 @@ along with {Plugin Name}. If not, see {License URI}.
 			  <td>
 			  <input type="text" name="translation" value="<?php echo $translation; ?>"></td>
 			  <td>
-			  <textarea name="content"><?php echo $content; ?></textarea></td>
+			  <div class="accordion">
+  <h3>Content</h3>
+  <div>
+    <textarea name="content"><?php echo $content; ?></textarea>
+  </div></div></td>
 			  <td><select name="proficiency" >
 				  <option value="beginner" <?php if ($proficiency == "beginner") { echo "selected='selected'";}; ?>>Beginner</option>
 				  <option value="intermediate" <?php if ($proficiency == "intermediate") { echo "selected='selected'";}; ?>>Intermediate</option>
@@ -253,8 +264,14 @@ along with {Plugin Name}. If not, see {License URI}.
  
  
 
- 	
+//enqueue scripts / styles
 
+
+ 	
+function vt_enqueue_scripts() {
+  wp_enqueue_script("jquery-effects-core");
+}
+add_action('wp_enqueue_scripts','vt_enqueue_scripts');
 
  
 //admin tab
