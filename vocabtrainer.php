@@ -30,13 +30,7 @@ along with {Plugin Name}. If not, see {License URI}.
  
  function vt_page() {
  	?>
- 	<script>
- 		  $(function() {
-    $( ".accordion" ).accordion({
-      collapsible: true
-    });
-  });
- 	</script>
+ 	
  	<h1>Edit Words / New Words</h1>
  	<?php
  	
@@ -180,6 +174,28 @@ along with {Plugin Name}. If not, see {License URI}.
 			  <th></th>
 			  <th></th>
 			 </thead>
+			 <tr><form action="" method="post" name="myForm">
+	    		<td>
+			  	<h3>NEW WORD</h3>
+			  
+	    		<td>
+			  <input type="text" name="original" value=""></td>
+			 <td> 
+			  <input type="text" name="transliteration" value=""></td>
+			  <td>
+			  <input type="text" name="translation" value=""></td>
+			  <td>
+			  <textarea name="content" rows="10" cols="50"></textarea></td>
+			  <td><select name="proficiency" value="">
+				  <option value="beginner">Beginner</option>
+				  <option value="intermediate">Intermediate</option>
+				  <option value="advanced">Advanced</option>
+				  
+				</select></td>
+			  <td><input type="submit" value="New Word" class="button-primary"></td>
+			  <input type="hidden" name="action" value="new_post" />
+				<?php wp_nonce_field( 'new-post' ); ?></form>
+			  </tr>
 		<?php
 	  while ($my_query->have_posts()) : $my_query->the_post(); 
 	  $id = get_the_ID();
@@ -205,10 +221,11 @@ along with {Plugin Name}. If not, see {License URI}.
 			  <input type="text" name="translation" value="<?php echo $translation; ?>"></td>
 			  <td>
 			  <div class="accordion">
-  <h3>Content</h3>
-  <div>
-    <textarea name="content"><?php echo $content; ?></textarea>
-  </div></div></td>
+				  <h3>Edit Content</h3>
+				  <div>
+				    <textarea name="content" rows="10" cols="50"><?php echo $content; ?></textarea>
+				  </div>
+			  </div></td>
 			  <td><select name="proficiency" >
 				  <option value="beginner" <?php if ($proficiency == "beginner") { echo "selected='selected'";}; ?>>Beginner</option>
 				  <option value="intermediate" <?php if ($proficiency == "intermediate") { echo "selected='selected'";}; ?>>Intermediate</option>
@@ -231,28 +248,7 @@ along with {Plugin Name}. If not, see {License URI}.
 	    	
 	    <?php
 	  endwhile;?>
-	  			<tr><form action="" method="post" name="myForm">
-	    		<td>
-			  	New Word:
-			  
-	    		<td>
-			  <input type="text" name="original" value=""></td>
-			 <td> 
-			  <input type="text" name="transliteration" value=""></td>
-			  <td>
-			  <input type="text" name="translation" value=""></td>
-			  <td>
-			  <textarea name="content"></textarea></td>
-			  <td><select name="proficiency" value="">
-				  <option value="beginner">Beginner</option>
-				  <option value="intermediate">Intermediate</option>
-				  <option value="advanced">Advanced</option>
-				  
-				</select></td>
-			  <td><input type="submit" value="New Word" class="button-primary"></td>
-			  <input type="hidden" name="action" value="new_post" />
-				<?php wp_nonce_field( 'new-post' ); ?></form>
-			  </tr>
+	  			
 	  </table><?php
 	}
 	wp_reset_query();
@@ -267,11 +263,21 @@ along with {Plugin Name}. If not, see {License URI}.
 //enqueue scripts / styles
 
 
- 	
-function vt_enqueue_scripts() {
-  wp_enqueue_script("jquery-effects-core");
+function vt_admin_script_init () {
+	wp_register_script ('vt_custom', plugins_url( '/js/vt_custom.js', __FILE__ ));
+	
+	wp_enqueue_style('vt_admin_custom', plugins_url( '/admin-styles.css', __FILE__ ));
+	 wp_enqueue_style( 'vt_admin_custom' );
 }
-add_action('wp_enqueue_scripts','vt_enqueue_scripts');
+add_action ('admin_init', 'vt_admin_script_init');
+
+ add_action("admin_enqueue_scripts", "vt_admin_scripts");
+ 
+ function vt_admin_scripts() {
+ 	wp_enqueue_script('jquery-ui-accordion');
+	wp_enqueue_script('vt_custom','jquery-ui-accordion') ;
+ }
+
 
  
 //admin tab
@@ -304,6 +310,7 @@ add_action("admin_init", "vt_admin_init");
  
 function vt_admin_init(){
   add_meta_box("credits_meta", "Word Fields", "credits_meta", "vt_words", "advanced", "core");
+
 }
  
  
