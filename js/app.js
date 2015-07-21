@@ -164,8 +164,8 @@ myapp.controller('intermediate', ['$scope', '$http', '$routeParams', function($s
     }
   }).
   success(function(data, status, headers, config) {
-    $scope.postdata = data.posts;
-    $scope.count = data.count; 
+    $scope.postdata = data;
+    $scope.count = data.length; 
     $scope.lastID = $routeParams.lastId;
     do {
     	$scope.RandomID = Math.floor(Math.random() * $scope.count);
@@ -186,7 +186,7 @@ myapp.controller('intermediate', ['$scope', '$http', '$routeParams', function($s
 	$scope.choices.splice(Math.floor(Math.random() * 2), 0, $scope.postdata[$scope.RandomID]);
     
    $scope.checktranslation = function(value) {
-    if (value == $scope.postdata[$scope.RandomID].acf.translation) {
+    if (value == $scope.postdata[$scope.RandomID].custom_fields.translation) {
        $scope.checktranslation_message = "Congrats. That is correct!";
        $scope.result = true;
     }
@@ -196,7 +196,7 @@ myapp.controller('intermediate', ['$scope', '$http', '$routeParams', function($s
     }
 };
   $scope.checktranslation_eng = function(value) {
-    if (value == $scope.postdata[$scope.RandomID].acf.transliteration) {
+    if (value == $scope.postdata[$scope.RandomID].custom_fields.transliteration) {
        $scope.checktranslation_message = "Congrats. That is correct!";
        $scope.result = true;
     }
@@ -230,8 +230,8 @@ myapp.controller('beginner', ['$scope', '$http', '$routeParams', function($scope
     }
   }).
   success(function(data, status, headers, config) {
-    $scope.postdata = data.posts;
-    $scope.count = data.count; 
+    $scope.postdata = data;
+    $scope.count = data.length; 
     $scope.lastID = $routeParams.lastId;
     console.log($scope.lastID);
     do {
@@ -253,7 +253,7 @@ myapp.controller('beginner', ['$scope', '$http', '$routeParams', function($scope
 	$scope.choices.splice(Math.floor(Math.random() * 2), 0, $scope.postdata[$scope.RandomID]);
     
  $scope.checktranslation = function(value) {
-    if (value == $scope.postdata[$scope.RandomID].acf.translation) {
+    if (value == $scope.postdata[$scope.RandomID].custom_fields.translation) {
        $scope.checktranslation_message = "Congrats. That is correct!";
        $scope.result = true;
     }
@@ -264,7 +264,7 @@ myapp.controller('beginner', ['$scope', '$http', '$routeParams', function($scope
 };
   
 $scope.checktranslation_eng = function(value) {
-    if (value == $scope.postdata[$scope.RandomID].acf.transliteration) {
+    if (value == $scope.postdata[$scope.RandomID].custom_fields.transliteration) {
        $scope.checktranslation_message = "Congrats. That is correct!";
        $scope.result = true;
     }

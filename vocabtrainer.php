@@ -405,6 +405,14 @@ add_filter( 'json_prepare_post', function ($data, $post, $context) {
 	return $data;
 }, 10, 3 );
 
+
+function addsomevars($filters){
+   $metaparts = array("meta_key", "meta_value", "meta_compare", "meta_query");
+   $filters = array_merge($filters, $metaparts);
+   return $filters;
+}
+add_filter('json_query_vars', 'addsomevars');
+
 //Shortcode
 
 //[vocab-trainer]

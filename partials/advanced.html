@@ -1,3 +1,5 @@
+<h3>Advanced Level</h3>
+
 What means {{postdata[RandomID].custom_fields.original}} [{{postdata[RandomID].custom_fields.transliteration}}]? <a href="{{site}}/advanced/eng"><button> Nep<>Eng
 </button></a>
 <br />
@@ -9,13 +11,13 @@ Please chose the translation that you think is correct
   <form name="myForm1" ng-submit="checktranslation(translation)">
   	
     
-    	<label ng-repeat="choice in choices">{{choice.custom_fields.translation}}
-    	<input type="radio" ng-model="$parent.translation" name="translation"  value="{{choice.custom_fields.translation}}"><br/>
+    	<label ng-repeat="choice in choices">
+    	<input type="radio" ng-model="$parent.translation" name="translation"  value="{{choice.custom_fields.translation}}">{{choice.custom_fields.translation}}<br/>
     	</label> <br/>
 
 		<input type="submit" id="submit" value="Check" />
 		{{checktranslation_message}}
-		<div ng-if="result"><a href="{{postdata[RandomID].link}}" target="_self"><h2>-->Learn more about {{postdata[RandomID].custom_fields.devanagari}} [{{postdata[RandomID].custom_fields.transliteration}}]</h2></a></div>
+		<div ng-if="result"><a href="{{postdata[RandomID].link}}" target="_self"><h2>-->Learn more about {{postdata[RandomID].custom_fields.original}} [{{postdata[RandomID].custom_fields.transliteration}}]</h2></a></div>
 </form>
 <br />
 <a href="{{site}}/advanced/id/{{RandomID}}" > <button>New Word</button></a>
