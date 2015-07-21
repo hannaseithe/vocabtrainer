@@ -1,0 +1,34 @@
+What means
+<b>{{postdata[RandomID].acf.translation}}</b> in Nepali? <a href="{{site}}/intermediate"><button> Nep<>Eng
+</button></a>
+<br />
+
+<br />
+
+
+Please chose the translation that you think is correct
+  <form name="myForm1" ng-submit="checktranslation_eng(translation)">
+  	
+    
+    	<label ng-repeat="choice in choices">{{choice.acf.devanagari}} [{{choice.acf.transliteration}}]
+    	<input type="radio" ng-model="$parent.translation" name="translation"  value="{{choice.acf.transliteration}}"><br/>
+    	</label> <br/>
+
+		<input type="submit" id="submit" value="Check" />
+		{{checktranslation_message}}
+		<div ng-if="result"><a href="{{postdata[RandomID].url}}" target="_self">Learn more about {{postdata[RandomID].acf.devanagari}} [{{postdata[RandomID].acf.transliteration}}]</a></div>
+</form>
+<a href="{{site}}/intermediate/eng/id/{{RandomID}}" > New Word</a>
+
+<br /><br />
+Want to change level of difficulty?
+<a href="{{site}}/beginner"><button> Beginner
+</button></a>
+<a href="{{site}}/advanced"><button> Advanced
+</button></a>
+
+<br/>
+<br />
+<a ng-click="reloadRoute()"><button> Reload
+</button></a>
+ 

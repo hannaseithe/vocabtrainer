@@ -1,0 +1,15 @@
+Which level of vocabulary do you want to study?<br /><br />
+<a href="{{site}}beginner" ng-click="reloadRoute()"><button> Beginner
+</button></a>
+<a href="{{site}}intermediate" ng-click="reloadRoute()"><button> Intermediate
+</button></a>
+<a href="{{site}}advanced" ng-click="reloadRoute()"><button> Advanced
+</button></a>
+ 
+
+<ul>
+    <li ng-repeat="post in postdata">{{post.title}}<br />{{post.content}}
+    	<br />{{post.acf.devanagari}}
+    	<br />{{post.acf.transliteration}}
+    	<br />{{post.acf.translation}}</li>
+  </ul>

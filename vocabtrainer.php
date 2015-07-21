@@ -262,23 +262,76 @@ along with {Plugin Name}. If not, see {License URI}.
 
 //enqueue scripts / styles
 
+function vt_frontend_scripts() {
+		 // register AngularJS
+		  wp_register_script('angular-core', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.14/angular.js', array(), null, false);
+		  
+		  	wp_register_script(
+				'angular-route', 'https://ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js', array('angular-core'), null, false
+			);
+		  
+		
+		  // register our app.js, which has a dependency on angular-core
+		  wp_register_script('angular-app', plugins_url( '/js/app.js', __FILE__ ), array('angular-core','angular-route'), null, false);
+		
+		  // enqueue all scripts
+		  wp_enqueue_script('angular-core');
+		  wp_enqueue_script('angular-route');
+		  wp_enqueue_script('angular-app');
+		
+		  // we need to create a JavaScript variable to store our API endpoint...   
+		  wp_localize_script( 'angular-core', 'AppAPI', array( 'url' => get_bloginfo('wpurl').'/wp-json/') ); // this is the API address of the JSON API plugin
+		  // ... and useful information such as the theme directory and website url
+		  wp_localize_script( 'angular-core', 'BlogInfo', array( 'url' => get_bloginfo('template_directory').'/', 'site' => get_permalink()) );
+		  
+		  wp_localize_script(
+				'angular-app',
+				'myLocalized',
+				array(
+					'partials' => plugins_url( '/partials/', __FILE__ )
+					)
+			);
+	
+}
+add_action( 'wp_enqueue_scripts', 'vt_frontend_scripts' );
+
+
+
+
 
 function vt_admin_script_init () {
 	wp_register_script ('vt_custom', plugins_url( '/js/vt_custom.js', __FILE__ ));
+	
 	
 	wp_enqueue_style('vt_admin_custom', plugins_url( '/admin-styles.css', __FILE__ ));
 	 wp_enqueue_style( 'vt_admin_custom' );
 }
 add_action ('admin_init', 'vt_admin_script_init');
 
- add_action("admin_enqueue_scripts", "vt_admin_scripts");
+
+
+
  
  function vt_admin_scripts() {
  	wp_enqueue_script('jquery-ui-accordion');
 	wp_enqueue_script('vt_custom','jquery-ui-accordion') ;
  }
 
+ add_action('admin_enqueue_scripts', 'vt_admin_scripts');
+ 
+ 
+ 
+// modify header tab
 
+function vt_header() {
+	?>
+	<base href="<?php echo get_permalink(); ?>" />
+	<?php
+}
+
+add_action('wp_head','vt_header');
+
+ 
  
 //admin tab
 function vt_menu() {
@@ -340,4 +393,29 @@ function save_details(){
   update_post_meta($post->ID, "translation", $_POST["translation"]);
  
  }
+
+
+add_filter( 'json_prepare_post', function ($data, $post, $context) {
+	$data['custom_fields'] = array(
+		'original' => get_post_meta( $post['ID'], 'original', true ),
+		'transliteration' => get_post_meta( $post['ID'], 'transliteration', true ),
+		'translation' => get_post_meta( $post['ID'], 'translation', true ),
+		'proficiency' => get_post_meta( $post['ID'], 'proficiency', true ),
+	);
+	return $data;
+}, 10, 3 );
+
+//Shortcode
+
+//[vocab-trainer]
+function vt_short( $atts ){
+	?>
+	<div ng-app="vt-app">
+		<div ng-view></div>
+	</div>
+	
+	<?php
+}
+add_shortcode( 'vocab-trainer', 'vt_short' );
+
 ?>

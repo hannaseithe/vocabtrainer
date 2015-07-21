@@ -1,0 +1,31 @@
+What means
+{{postdata[RandomID].acf.devanagari}} [{{postdata[RandomID].acf.transliteration}}]? <a href="{{site}}/beginner/eng"><button> Nep<>Eng
+</button></a>
+<br />
+
+<br />
+
+
+Please chose the translation that you think is correct
+  <form name="myForm1" ng-submit="checktranslation(translation)">
+  	
+    
+    	<label ng-repeat="choice in choices">{{choice.acf.translation}}
+    	<input type="radio" ng-model="$parent.translation" name="translation"  value="{{choice.acf.translation}}"><br/>
+    	</label> <br/>
+
+		<input type="submit" id="submit" value="Check" />
+		{{checktranslation_message}}
+		<div ng-if="result"><a href="{{postdata[RandomID].url}}" target="_self">Learn more about {{postdata[RandomID].acf.devanagari}} [{{postdata[RandomID].acf.transliteration}}]</a></div>
+</form>
+<a href="{{site}}/beginner/id/{{RandomID}}" > New Word</a>
+
+<br /><br />
+Want to change level of difficulty?
+<a href="{{site}}/intermediate"><button> Intermediate
+</button></a>
+<a href="{{site}}/advanced"><button> Advanced
+</button></a>
+
+
+
